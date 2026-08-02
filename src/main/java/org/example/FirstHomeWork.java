@@ -40,7 +40,7 @@ public class FirstHomeWork {
         for (int i = Start; i > 0; i--) {
             result += i + " ";
         }
-        return result + "Поехали";
+        return result + "Поехали!";
     }
     public static int sumToN(int n){
         int result = 0;
