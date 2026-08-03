@@ -20,7 +20,6 @@ tasks.test {
 }
 
 tasks.register("runAllTests") {
-    useJUnitPlatform()
     group = "tests"
     description = "Запускает все тесты проекта"
 
