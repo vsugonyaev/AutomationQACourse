@@ -14,7 +14,6 @@ import static org.example.FirstHomeWork.calcAverage;
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args){
-        List<Integer> list1 = Arrays.asList(2, 4, 6, 8);
-        System.out.println("Среднее для [2,4,6,8]: " + calcAverage(list1));
+        System.out.println(getEvenInRange(-100, 100));
     }
 }
