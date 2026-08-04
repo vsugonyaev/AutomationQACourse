@@ -1,4 +1,3 @@
-package org.example;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -150,7 +149,7 @@ class FirstHomeWorkTest {
     void testReverse() {
         String[] input = {"a", "b", "c", "d"};
         String[] expectedResult = {"d", "c", "b", "a"};
-        String[] actualResult = FirstHomeWork.reverse(input);
+        String[] actualResult = reverse(input);
         if (actualResult == expectedResult) {
             System.out.println(pass);
         } else {
