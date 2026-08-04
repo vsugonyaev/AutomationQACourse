@@ -22,13 +22,16 @@ tasks.test {
 tasks.register("runAllTests") {
     group = "tests"
     description = "Запускает все тесты проекта"
-
+    dependsOn(tasks.test)
+    finalizedBy("printTestRunOver")
 }
+
 tasks.register("printTestRunOver") {
-    group = "tests"
-    dependsOn("runAllTests")
-    dependsOn("test")
-    doLast {
-        println("Test Run is Over")
-    }
+        group = "tests"
+        doLast {
+            println()
+            println("======================================")
+            println("         TEST RUN IS OVER")
+            println("======================================")
+        }
 }

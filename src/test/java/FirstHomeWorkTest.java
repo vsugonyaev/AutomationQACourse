@@ -104,7 +104,7 @@ class FirstHomeWorkTest {
     }
 
     @ParameterizedTest
-    @CsvFileSource(resources = "getEvenInRange-data.csv", delimiter = ',', numLinesToSkip = 1)
+    @CsvFileSource(resources = "/getEvenInRange-data.csv", delimiter = ',', numLinesToSkip = 1)
     @DisplayName("Test of method getEvenInRange")
     void testGetEvenInRange(int start, int end, String expectedResult) {
         String actualResult = getEvenInRange(start, end);
@@ -115,11 +115,30 @@ class FirstHomeWorkTest {
         }
     }
     //to do test hasBug
+    @Test
+    @DisplayName("Test of method findBug")
+    void testFindBug() {
+        String[] withBug = {"Hello", "bug", "World"};
+        String[] withoutBug = {"Hello", "Mother", "World"};
+        boolean result = hasBug(withBug);
+        boolean result2 = hasBug(withoutBug);
+        if (result && !result2) {
+            System.out.println(pass);
+        } else {
+            System.out.println(fail);
+        }
+    }
+
     @ParameterizedTest
-    @CsvFileSource(resources = "findMax-data.csv", delimiter = ';', numLinesToSkip = 1)
+    @CsvFileSource(resources = "/find-max-data.csv", delimiter = ';', numLinesToSkip = 1)
     @DisplayName("Test of method findMax")
-    void testFindMax(int [] input, int expectedResult) {
-        int actualResult = findMax(input);
+    void testFindMax(String input, int expectedResult) {
+        String [] inputString = input.split(",");
+        int [] inputList = new int[inputString.length];
+        for (int i = 0; i < inputString.length; i++) {
+            inputList[i] = Integer.parseInt(inputString[i].trim());
+        }
+        int actualResult = findMax(inputList);
         if (actualResult == expectedResult) {
             System.out.println(pass);
         } else {
@@ -139,6 +158,26 @@ class FirstHomeWorkTest {
         }
     }
     //to do test calcAverage
+    @RepeatedTest(5)
+    @DisplayName("Test of method calcAvarage")
+    void testCalcAverage() {
+        int size = random.nextInt(1, 11);
+        List<Integer> list = new ArrayList<>();
+        int sum = 0;
+        for (int i = 0; i < size; i++) {
+            int number = random.nextInt(1, 100);
+            list.add(number);
+            sum += number;
+        }
+        int actualResult = calcAverage(list);
+        int expectedResult = sum / size;
+        if (actualResult == expectedResult) {
+            System.out.println(pass);
+        } else {
+            System.out.println(fail);
+        }
+    }
+
     @ParameterizedTest
     @CsvFileSource(resources = "/removeName-data.csv", delimiter = ';', numLinesToSkip = 1)
     @DisplayName("Test of method removeSpecificName")
