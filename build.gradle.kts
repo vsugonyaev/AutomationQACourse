@@ -16,18 +16,18 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
-    group = "tests"
+    group = "verification"
 }
 
-tasks.register("runAllTests") {
-    group = "tests"
+tasks.register( "runAllTests") {
+    group = "verification"
     description = "Запускает все тесты проекта"
     dependsOn(tasks.test)
     finalizedBy("printTestRunOver")
 }
 
 tasks.register("printTestRunOver") {
-        group = "tests"
+        group = "verification"
         doLast {
             println()
             println("======================================")
