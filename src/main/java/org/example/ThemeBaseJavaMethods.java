@@ -3,7 +3,7 @@ package org.example;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FirstHomeWork {
+public class ThemeBaseJavaMethods {
     public static boolean isEven(int n) {
         boolean result = (n % 2 == 0) ? true : false;
         return result;

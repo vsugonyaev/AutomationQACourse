@@ -1,17 +1,21 @@
-
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import static org.example.FirstHomeWork.*;
+import static org.example.ThemeBaseJavaMethods.*;
+import static org.example.ThemeBaseJavaMethods.calcAverage;
+import static org.example.ThemeBaseJavaMethods.findMax;
+import static org.example.ThemeBaseJavaMethods.getEvenInRange;
+import static org.example.ThemeBaseJavaMethods.hasBug;
+import static org.example.ThemeBaseJavaMethods.removeSpecificName;
+import static org.example.ThemeBaseJavaMethods.reverse;
 
-class FirstHomeWorkTest {
+public class ThemeGradleJunitSecondTaskTest {
     private static final Random random = new Random();
     private static final String pass = "TEST PASSED";
     private static final String fail = "TEST FAILED";
@@ -25,45 +29,6 @@ class FirstHomeWorkTest {
     void finish()  {
         System.out.println("Test method end");
         System.out.println("==============================");
-    }
-    @Test
-    @DisplayName("Test of method isEven")
-    void testIsEven() {
-        int n = random.nextInt(0, 100);
-        boolean actualResult = isEven(n);
-        if (actualResult){
-            System.out.println("Number " + n + " is even!");
-        } else {
-            System.out.println("Number " + n + " is NOT even!");
-        }
-    }
-
-    @RepeatedTest(20)
-    @DisplayName("Test of method checkAccess")
-    void testCheckAccess() {
-        int age = random.nextInt(1, 99);
-        String actualResult = checkAccess(age);
-        if (actualResult.equals("Allowed")) {
-            System.out.println("For person with age "+ age + " access allowed.");
-        } else {
-            System.out.println("For person with age "+ age + " access denied.");
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource("getTestData")
-    @DisplayName("Test of method getGrade")
-    void testGetGrade(int value) {
-        String grade = getGrade(value);
-        System.out.println("For result "+ value + " grade is: " + grade);
-    }
-    static List<Integer> getTestData(){
-        List<Integer> testData = new ArrayList<>();
-        int size = 25;
-        for (int i = 0; i < size; i++) {
-            testData.add(random.nextInt(0, 100));
-        }
-        return testData.stream().toList();
     }
 
     @RepeatedTest(5)
@@ -96,9 +61,9 @@ class FirstHomeWorkTest {
         int n = random.nextInt(1, 100);
         int result = sumToN(n);
         if (result == n * (n + 1) / 2) {
-            System.out.println("TEST PASSED");
+            System.out.println(pass);
         } else {
-            System.out.println("TEST FAILED");
+            System.out.println(fail);
         }
     }
 
