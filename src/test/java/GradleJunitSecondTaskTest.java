@@ -7,15 +7,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import static org.example.ThemeBaseJavaMethods.*;
-import static org.example.ThemeBaseJavaMethods.calcAverage;
-import static org.example.ThemeBaseJavaMethods.findMax;
-import static org.example.ThemeBaseJavaMethods.getEvenInRange;
-import static org.example.ThemeBaseJavaMethods.hasBug;
-import static org.example.ThemeBaseJavaMethods.removeSpecificName;
-import static org.example.ThemeBaseJavaMethods.reverse;
+import static org.example.BaseJavaMethods.*;
+import static org.example.BaseJavaMethods.calcAverage;
+import static org.example.BaseJavaMethods.findMax;
+import static org.example.BaseJavaMethods.getEvenInRange;
+import static org.example.BaseJavaMethods.hasBug;
+import static org.example.BaseJavaMethods.removeSpecificName;
+import static org.example.BaseJavaMethods.reverse;
 
-public class ThemeGradleJunitSecondTaskTest {
+public class GradleJunitSecondTaskTest {
     private static final Random random = new Random();
     private static final String pass = "TEST PASSED";
     private static final String fail = "TEST FAILED";

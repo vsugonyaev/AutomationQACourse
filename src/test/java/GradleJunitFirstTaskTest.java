@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static org.example.ThemeBaseJavaMethods.*;
+import static org.example.BaseJavaMethods.*;
 
-class ThemeGradleJunitFirstTaskTest {
+class GradleJunitFirstTaskTest {
     private static final Random random = new Random();
 
     @BeforeEach
