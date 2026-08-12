@@ -10,6 +10,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.example.AssertionMethods.toRoman;
 import static org.example.BaseJavaMethods.isEven;
 
 @Tag("Theme3.1")
@@ -74,5 +75,14 @@ public class AssertionFirstTaskTest {
         assertThat(isEven(-4))
                 .as("-4 должно быть чётным")
                 .isTrue();
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/toRoman-data.csv", delimiter = ',', numLinesToSkip = 1)
+    @DisplayName("Test of method toRoman")
+    void testToRoman(int number, String expectedResult) {
+        String actualResult = toRoman(number);
+        assertThat(actualResult)
+                .isEqualTo(expectedResult);
     }
 }
