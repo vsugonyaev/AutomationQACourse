@@ -15,20 +15,18 @@ import static org.example.BaseJavaMethods.hasBug;
 import static org.example.BaseJavaMethods.removeSpecificName;
 import static org.example.BaseJavaMethods.reverse;
 
+@Tag("Theme2.2")
 public class GradleJunitSecondTaskTest {
     private static final Random random = new Random();
     private static final String pass = "TEST PASSED";
     private static final String fail = "TEST FAILED";
-    private static final String theme = "Theme2.2";
 
     @BeforeEach
-    @Tag(theme)
     void start() {
         System.out.println("==============================");
         System.out.println("Test method start");
     }
     @AfterEach
-    @Tag(theme)
     void finish()  {
         System.out.println("Test method end");
         System.out.println("==============================");
@@ -36,7 +34,6 @@ public class GradleJunitSecondTaskTest {
 
     @RepeatedTest(5)
     @DisplayName("Test of method isPositive")
-    @Tag(theme)
     void testIsPositive() {
         int n = random.nextInt(-100, 100) ;
         boolean actualResult = isPositive(n);
@@ -50,7 +47,6 @@ public class GradleJunitSecondTaskTest {
     @ParameterizedTest
     @CsvFileSource(resources = "/blastOff-data.csv", delimiter = ',', numLinesToSkip = 1)
     @DisplayName("Test of method blastOff")
-    @Tag(theme)
     void testBlastOff(int start, String expectedResult) {
         String actualResult = blastOff(start);
         if (actualResult.equals(expectedResult)) {
@@ -62,7 +58,6 @@ public class GradleJunitSecondTaskTest {
 
     @RepeatedTest(10)
     @DisplayName("Test of sumToN")
-    @Tag(theme)
     void testSumToN() {
         int n = random.nextInt(1, 100);
         int result = sumToN(n);
@@ -76,7 +71,6 @@ public class GradleJunitSecondTaskTest {
     @ParameterizedTest
     @CsvFileSource(resources = "/getEvenInRange-data.csv", delimiter = ',', numLinesToSkip = 1)
     @DisplayName("Test of method getEvenInRange")
-    @Tag(theme)
     void testGetEvenInRange(int start, int end, String expectedResult) {
         String actualResult = getEvenInRange(start, end);
         if (actualResult.equals(expectedResult)) {
@@ -88,7 +82,6 @@ public class GradleJunitSecondTaskTest {
     //to do test hasBug
     @Test
     @DisplayName("Test of method findBug")
-    @Tag(theme)
     void testFindBug() {
         String[] withBug = {"Hello", "bug", "World"};
         String[] withoutBug = {"Hello", "Mother", "World"};
@@ -104,7 +97,6 @@ public class GradleJunitSecondTaskTest {
     @ParameterizedTest
     @CsvFileSource(resources = "/findMax-data.csv", delimiter = ';', numLinesToSkip = 1)
     @DisplayName("Test of method findMax")
-    @Tag(theme)
     void testFindMax(String input, int expectedResult) {
         String [] inputString = input.split(",");
         int [] inputList = new int[inputString.length];
@@ -120,7 +112,6 @@ public class GradleJunitSecondTaskTest {
     }
     @Test
     @DisplayName("Test of method reverse")
-    @Tag(theme)
     void testReverse() {
         String[] input = {"a", "b", "c", "d"};
         String[] expectedResult = {"d", "c", "b", "a"};
@@ -134,7 +125,6 @@ public class GradleJunitSecondTaskTest {
     //to do test calcAverage
     @RepeatedTest(5)
     @DisplayName("Test of method calcAvarage")
-    @Tag(theme)
     void testCalcAverage() {
         int size = random.nextInt(1, 11);
         List<Integer> list = new ArrayList<>();
@@ -156,7 +146,6 @@ public class GradleJunitSecondTaskTest {
     @ParameterizedTest
     @CsvFileSource(resources = "/removeName-data.csv", delimiter = ';', numLinesToSkip = 1)
     @DisplayName("Test of method removeSpecificName")
-    @Tag(theme)
     void testRemoveSpecificName(String inputNames, String nameToRemove, String expectedNames) {
         List<String> inputList = inputNames.isEmpty() ? new ArrayList<>()
                 : Arrays.asList(inputNames.split(","));

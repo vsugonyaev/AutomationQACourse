@@ -12,19 +12,16 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.example.BaseJavaMethods.isEven;
 
+@Tag("Theme3.1")
 public class AssertionFirstTaskTest {
     private static final Random random = new Random();
-    private static final String theme = "Theme3.1";
-
 
     @BeforeEach
-    @Tag(theme)
     void start() {
         System.out.println("==============================");
         System.out.println("Test method start");
     }
     @AfterEach
-    @Tag(theme)
     void finish()  {
         System.out.println("Test method end");
         System.out.println("==============================");
@@ -32,7 +29,6 @@ public class AssertionFirstTaskTest {
 
     @Test
     @DisplayName("Test of method Calculator")
-    @Tag(theme)
     void testAdd() {
         int n1 = random.nextInt(100);
         int n2 = random.nextInt(100);
@@ -47,7 +43,6 @@ public class AssertionFirstTaskTest {
     @ParameterizedTest
     @CsvFileSource(resources = "/getDivisor-data.csv", delimiter = ';', numLinesToSkip = 1)
     @DisplayName("Test of method getDivisor")
-    @Tag(theme)
     void testGetDivisor(int number, String divisors) {
         List<Integer> expected = Arrays.stream(divisors.split(","))
                 .map(String::trim)
@@ -63,7 +58,6 @@ public class AssertionFirstTaskTest {
 
     @Test
     @DisplayName("Another test isEven")
-    @Tag(theme)
     void testIsEven() {
         assertThat(isEven(2))
                 .as("2 должно быть чётным")

@@ -27,7 +27,46 @@ tasks.register( "runAllTests") {
     dependsOn(tasks.test)
     finalizedBy("printTestRunOver")
 }
+tasks.register<Test>("runTheme31Tests") {
+    group = "verification"
+    description = "Запускает тесты с тегом Theme3.1"
 
+    useJUnitPlatform {
+        includeTags("Theme3.1")
+    }
+
+    finalizedBy("printTestRunOver")
+}
+tasks.register<Test>("runTheme32Tests") {
+    group = "verification"
+    description = "Запускает тесты с тегом Theme3.2"
+
+    useJUnitPlatform {
+        includeTags("Theme3.2")
+    }
+
+    finalizedBy("printTestRunOver")
+}
+tasks.register<Test>("runTheme21Tests") {
+    group = "verification"
+    description = "Запускает тесты с тегом Theme2.1"
+
+    useJUnitPlatform {
+        includeTags("Theme2.1")
+    }
+
+    finalizedBy("printTestRunOver")
+}
+tasks.register<Test>("runTheme22Tests") {
+    group = "verification"
+    description = "Запускает тесты с тегом Theme2.2"
+
+    useJUnitPlatform {
+        includeTags("Theme2.2")
+    }
+
+    finalizedBy("printTestRunOver")
+}
 tasks.register("printTestRunOver") {
         group = "verification"
         doLast {
