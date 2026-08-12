@@ -11,19 +11,23 @@ import static org.example.BaseJavaMethods.*;
 
 class GradleJunitFirstTaskTest {
     private static final Random random = new Random();
+    private static final String theme = "Theme2.1";
 
     @BeforeEach
+    @Tag(theme)
     void start() {
         System.out.println("==============================");
         System.out.println("Test method start");
     }
     @AfterEach
+    @Tag(theme)
     void finish()  {
         System.out.println("Test method end");
         System.out.println("==============================");
     }
     @Test
     @DisplayName("Test of method isEven")
+    @Tag(theme)
     void testIsEven() {
         int n = random.nextInt(0, 100);
         boolean actualResult = isEven(n);
@@ -36,6 +40,7 @@ class GradleJunitFirstTaskTest {
 
     @RepeatedTest(20)
     @DisplayName("Test of method checkAccess")
+    @Tag(theme)
     void testCheckAccess() {
         int age = random.nextInt(1, 99);
         String actualResult = checkAccess(age);
@@ -49,6 +54,7 @@ class GradleJunitFirstTaskTest {
     @ParameterizedTest
     @MethodSource("getTestData")
     @DisplayName("Test of method getGrade")
+    @Tag(theme)
     void testGetGrade(int value) {
         String grade = getGrade(value);
         System.out.println("For result "+ value + " grade is: " + grade);

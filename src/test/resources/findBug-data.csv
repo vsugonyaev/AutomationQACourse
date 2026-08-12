@@ -1,0 +1,6 @@
+words;expectedResult
+Hello,bug,World;true
+Hello,Mother,World;false
+Bug,at,start;true
+End,with,bug;true
+No,issues,here;false

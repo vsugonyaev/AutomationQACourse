@@ -1,8 +1,6 @@
 import org.example.AssertionMethods;
 import org.example.AssertionMethods.*;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
@@ -17,6 +15,21 @@ import static org.example.BaseJavaMethods.isEven;
 public class AssertionFirstTaskTest {
     private static final Random random = new Random();
     private static final String theme = "Theme3.1";
+
+
+    @BeforeEach
+    @Tag(theme)
+    void start() {
+        System.out.println("==============================");
+        System.out.println("Test method start");
+    }
+    @AfterEach
+    @Tag(theme)
+    void finish()  {
+        System.out.println("Test method end");
+        System.out.println("==============================");
+    }
+
     @Test
     @DisplayName("Test of method Calculator")
     @Tag(theme)

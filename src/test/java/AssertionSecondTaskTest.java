@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.example.BaseJavaMethods.*;
 import static org.example.BaseJavaMethods.calcAverage;
 import static org.example.BaseJavaMethods.findMax;
@@ -15,11 +16,9 @@ import static org.example.BaseJavaMethods.hasBug;
 import static org.example.BaseJavaMethods.removeSpecificName;
 import static org.example.BaseJavaMethods.reverse;
 
-public class GradleJunitSecondTaskTest {
+public class AssertionSecondTaskTest {
     private static final Random random = new Random();
-    private static final String pass = "TEST PASSED";
-    private static final String fail = "TEST FAILED";
-    private static final String theme = "Theme2.2";
+    private static final String theme = "Theme3.2";
 
     @BeforeEach
     @Tag(theme)
@@ -34,17 +33,16 @@ public class GradleJunitSecondTaskTest {
         System.out.println("==============================");
     }
 
-    @RepeatedTest(5)
+    @RepeatedTest(10)
     @DisplayName("Test of method isPositive")
     @Tag(theme)
     void testIsPositive() {
         int n = random.nextInt(-100, 100) ;
         boolean actualResult = isPositive(n);
-        if (n > 0 && actualResult || n < 0 && !actualResult) {
-            System.out.println(pass);
-        } else {
-            System.out.println(fail);
-        }
+        boolean expectedResult = n > 0 ;
+        assertThat(actualResult)
+                .as("isPositive(%d) должен быть %b", n, expectedResult)
+                .isEqualTo(expectedResult);
     }
 
     @ParameterizedTest
@@ -53,11 +51,9 @@ public class GradleJunitSecondTaskTest {
     @Tag(theme)
     void testBlastOff(int start, String expectedResult) {
         String actualResult = blastOff(start);
-        if (actualResult.equals(expectedResult)) {
-            System.out.println(pass);
-        } else {
-            System.out.println(fail);
-        }
+        assertThat(actualResult)
+                .as("blastOff(%d) должен вернуть \"%s\"", start, expectedResult)
+                .isEqualTo(expectedResult);
     }
 
     @RepeatedTest(10)
@@ -65,12 +61,12 @@ public class GradleJunitSecondTaskTest {
     @Tag(theme)
     void testSumToN() {
         int n = random.nextInt(1, 100);
-        int result = sumToN(n);
-        if (result == n * (n + 1) / 2) {
-            System.out.println(pass);
-        } else {
-            System.out.println(fail);
-        }
+        int actualResult = sumToN(n);
+        int expectedResult = n * (n + 1) / 2;
+
+        assertThat(actualResult)
+                .as("sumToN(%d) должен быть %d", n, expectedResult)
+                .isEqualTo(expectedResult);
     }
 
     @ParameterizedTest
@@ -79,26 +75,22 @@ public class GradleJunitSecondTaskTest {
     @Tag(theme)
     void testGetEvenInRange(int start, int end, String expectedResult) {
         String actualResult = getEvenInRange(start, end);
-        if (actualResult.equals(expectedResult)) {
-            System.out.println(pass);
-        } else {
-            System.out.println(fail);
-        }
+        assertThat(actualResult)
+                .as("getEvenInRange(%d, %d) должен вернуть \"%s\"", start, end, expectedResult)
+                .isEqualTo(expectedResult);
     }
-    //to do test hasBug
-    @Test
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/findBug-data.csv", delimiter = ';', numLinesToSkip = 1)
     @DisplayName("Test of method findBug")
     @Tag(theme)
-    void testFindBug() {
-        String[] withBug = {"Hello", "bug", "World"};
-        String[] withoutBug = {"Hello", "Mother", "World"};
-        boolean result = hasBug(withBug);
-        boolean result2 = hasBug(withoutBug);
-        if (result && !result2) {
-            System.out.println(pass);
-        } else {
-            System.out.println(fail);
-        }
+    void testFindBug(String words, boolean expectedResult) {
+        String[] inputArray = words.split(",");
+        boolean actualResult = hasBug(inputArray);
+
+        assertThat(actualResult)
+                .as("hasBug(%s) должен быть %b", Arrays.toString(inputArray), expectedResult)
+                .isEqualTo(expectedResult);
     }
 
     @ParameterizedTest
@@ -112,11 +104,9 @@ public class GradleJunitSecondTaskTest {
             inputList[i] = Integer.parseInt(inputString[i].trim());
         }
         int actualResult = findMax(inputList);
-        if (actualResult == expectedResult) {
-            System.out.println(pass);
-        } else {
-            System.out.println(fail);
-        }
+        assertThat(actualResult)
+                .as("findMax(%s) должен быть %d", Arrays.toString(inputList), expectedResult)
+                .isEqualTo(expectedResult);
     }
     @Test
     @DisplayName("Test of method reverse")
@@ -125,11 +115,9 @@ public class GradleJunitSecondTaskTest {
         String[] input = {"a", "b", "c", "d"};
         String[] expectedResult = {"d", "c", "b", "a"};
         String[] actualResult = reverse(input);
-        if (actualResult == expectedResult) {
-            System.out.println(pass);
-        } else {
-            System.out.println(fail);
-        }
+        assertThat(actualResult)
+                .as("reverse(%s) должен вернуть %s", Arrays.toString(input), Arrays.toString(expectedResult))
+                .containsExactly(expectedResult);
     }
     //to do test calcAverage
     @RepeatedTest(5)
@@ -146,11 +134,9 @@ public class GradleJunitSecondTaskTest {
         }
         int actualResult = calcAverage(list);
         int expectedResult = sum / size;
-        if (actualResult == expectedResult) {
-            System.out.println(pass);
-        } else {
-            System.out.println(fail);
-        }
+        assertThat(actualResult)
+                .as("calcAverage(%s) должен быть %d", list, expectedResult)
+                .isEqualTo(expectedResult);
     }
 
     @ParameterizedTest
@@ -162,11 +148,9 @@ public class GradleJunitSecondTaskTest {
                 : Arrays.asList(inputNames.split(","));
         List<String> expectedList = expectedNames.isEmpty() ? new ArrayList<>()
                 : Arrays.asList(expectedNames.split(","));
-        List<String> actuaList = removeSpecificName(inputList, nameToRemove);
-        if (actuaList.equals(expectedList)) {
-            System.out.println(pass);
-        } else {
-            System.out.println(fail);
-        }
+        List<String> actualList = removeSpecificName(inputList, nameToRemove);
+        assertThat(actualList)
+                .as("removeSpecificName(%s, \"%s\") должен вернуть %s", inputList, nameToRemove, expectedList)
+                .isEqualTo(expectedList);
     }
 }
