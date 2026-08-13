@@ -14,6 +14,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     compileOnly("org.jetbrains:annotations:24.1.0")
     testImplementation("org.assertj:assertj-core:3.24.2")
+    // Source: https://mvnrepository.com/artifact/io.rest-assured/rest-assured
+    implementation("io.rest-assured:rest-assured:5.5.6")
 }
 
 tasks.test {
