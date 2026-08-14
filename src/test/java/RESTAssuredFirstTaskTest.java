@@ -2,6 +2,7 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import io.restassured.response.Response;
 
@@ -11,6 +12,7 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.*;
 
+@Tag("Theme4.1")
 public class RESTAssuredFirstTaskTest {
     private static final RequestSpecification rs =
             new RequestSpecBuilder()
@@ -134,8 +136,10 @@ public class RESTAssuredFirstTaskTest {
                 .getFloat("goods.find { it.id == " + id + " }.price");
 
         assertThat(actualName)
+                .as("Название должно быть: " + name + "но пришло: " + actualName)
                 .isEqualTo(name);
         assertThat(actualPrice)
+                .as("Цена должна быть: " + price + "но пришла: " + actualPrice)
                 .isEqualTo(price.floatValue());
     }
 }
