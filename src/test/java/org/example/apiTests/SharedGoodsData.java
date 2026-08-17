@@ -1,17 +1,13 @@
 package org.example.apiTests;
 
-import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
-import static org.assertj.core.api.Assertions.assertThat;
-import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.List;
 import java.util.Random;
 
 import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.FactoryBasedNavigableListAssert.assertThat;
-import static org.example.apiTests.BaseTest.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.example.apiTests.BaseTest.rs;
 
 
 public final class SharedGoodsData {

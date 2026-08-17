@@ -1,16 +1,19 @@
+package org.example.apiTests;
+
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import io.restassured.response.Response;
 
 import java.util.Random;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.example.apiTests.SharedGoodsData.deleteAllProducts;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
 
 @Tag("Theme4.1")
 public class RESTAssuredFirstTaskTest {
@@ -39,6 +42,7 @@ public class RESTAssuredFirstTaskTest {
     @Test
     @DisplayName("Проверка Get goods/list через Specification")
     void anotherTestGetGoods(){
+        deleteAllProducts();
         given()
                 .spec(rs)
                 .queryParam("page", 0)
@@ -68,10 +72,11 @@ public class RESTAssuredFirstTaskTest {
                           "price": %s
                         }
                         """.formatted(name, price))
+                    .log().all()
                     .when()
                     .post("/goods/add")
                     .then()
-                    .log().ifValidationFails()
+                    .log().all()
                     .statusCode(200)
                     .extract()
                     .path("data.id");
@@ -84,7 +89,7 @@ public class RESTAssuredFirstTaskTest {
                 .when()
                 .get("/goods/list")
                 .then()
-                .log().ifValidationFails()
+                .log().all()
                 .statusCode(200)
                 .body("goods.find { it.id == " + id + " }.name",
                         equalTo(name))
@@ -136,10 +141,10 @@ public class RESTAssuredFirstTaskTest {
                 .getFloat("goods.find { it.id == " + id + " }.price");
 
         assertThat(actualName)
-                .as("Название должно быть: %s, но пришло: %d", name, actualName)
+                .as("Название должно быть: %s, но пришло: %s", name, actualName)
                 .isEqualTo(name);
         assertThat(actualPrice)
-                .as("Цена должна быть: %s, но пришла: %d", price, actualPrice)
+                .as("Цена должна быть: %f, но пришла: %f", price, actualPrice)
                 .isEqualTo(price.floatValue());
     }
 }

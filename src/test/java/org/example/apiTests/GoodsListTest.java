@@ -17,6 +17,7 @@ class GoodsListTest extends BaseTest {
     static void clearAllGoods() {
         deleteAllProducts();
     }
+
     @Test
     @DisplayName("GET /goods/list -> 200, в ответе есть все созданные продукты")
     void listProducts_returns200_containsAllCreatedProductsWithCorrectData() {

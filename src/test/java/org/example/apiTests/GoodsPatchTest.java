@@ -3,9 +3,6 @@ package org.example.apiTests;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 
-import java.util.Map;
-import java.util.UUID;
-
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.example.apiTests.SharedGoodsData.*;
