@@ -13,7 +13,10 @@ import static org.example.apiTests.SharedGoodsData.*;
 @Order(5)
 @Tag("Theme4.2")
 class GoodsListTest extends BaseTest {
-
+    @BeforeAll
+    static void clearAllGoods() {
+        deleteAllProducts();
+    }
     @Test
     @DisplayName("GET /goods/list -> 200, в ответе есть все созданные продукты")
     void listProducts_returns200_containsAllCreatedProductsWithCorrectData() {
@@ -35,7 +38,7 @@ class GoodsListTest extends BaseTest {
         assertThat(response.statusCode()).isEqualTo(200);
         List<Integer> ids = response.jsonPath().getList("goods.id");
         List<String> names = response.jsonPath().getList("goods.name");
-        List<Double> prices = response.jsonPath().getList("goods.price");
+        List<Double> prices = response.jsonPath().getList("goods.price", Double.class);
         List<ProductData> products = List.of(firstProduct, secondProduct, thirdProduct);
         for (ProductData product : products) {
 
@@ -50,7 +53,7 @@ class GoodsListTest extends BaseTest {
                     .isEqualTo(product.name());
 
             assertThat(prices.get(index))
-                    .as("Ожидаем что цена продукта %s, а получили %d", product.price(), prices.get(index))
+                    .as("Ожидаем что цена продукта %d, а получили %d", product.price(), prices.get(index))
                     .isEqualTo(product.price());
         }
         deleteProduct(firstProduct.id());
@@ -96,7 +99,7 @@ class GoodsListTest extends BaseTest {
         assertThat(page0.statusCode()).isEqualTo(200);
         List<Integer> ids = page0.jsonPath().getList("goods.id");
         List<String> names = page0.jsonPath().getList("goods.name");
-        List<Double> prices = page0.jsonPath().getList("goods.price");
+        List<Double> prices = page0.jsonPath().getList("goods.price", Double.class);
 
         int index1 = ids.indexOf(firstProduct.id());
 

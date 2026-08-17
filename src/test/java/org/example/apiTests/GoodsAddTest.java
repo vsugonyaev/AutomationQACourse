@@ -13,10 +13,10 @@ import static org.example.apiTests.SharedGoodsData.*;
 @Order(1)
 @Tag("Theme4.2")
 public class GoodsAddTest extends BaseTest {
-    /*@BeforeAll
+    @BeforeAll
     static void clearAllGoods() {
         deleteAllProducts();
-    }*/
+    }
 
     @Test
     @DisplayName("POST /goods/add -> 200, когда запрос валидный")
