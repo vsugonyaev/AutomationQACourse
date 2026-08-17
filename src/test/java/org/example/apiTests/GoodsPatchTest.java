@@ -11,52 +11,86 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.example.apiTests.SharedGoodsData.*;
 
 @Tag("Theme4.2")
-@Order(3)
 class GoodsPatchTest extends BaseTest {
 
     @Test
-    @DisplayName("PATCH /goods/{id} -> 200, удачное переименование продукта")
-    void patchProduct_returns200_onValidUpdate() {
-        productName = randomName();
+    @DisplayName("PATCH /goods/{id} -> 200, удачное изменение имени продукта")
+    void patchProduct_returns200_onValidNameUpdate() {
+        ProductData product = createProduct();
+        String expectedName = randomName();
         Response response = given()
                 .spec(rs)
-                .body(new ProductRequest(productName, randomPrice()))
+                .body(new ProductRequest(expectedName, product.price()))
+                .log().all()
                 .when()
-                .patch("/goods/{id}", SharedGoodsData.productId);
+                .patch("/goods/{id}", product.id())
+                .then()
+                .log().all()
+                .extract().
+                response();
 
-        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.statusCode())
+                .as("Ожидаем успех и статус 200")
+                .isEqualTo(200);
 
-        Response getResponse = given()
-                .spec(rs)
-                .when()
-                .get("/goods/{id}", SharedGoodsData.productId);
-        String actualName = getResponse.jsonPath().getString("name");
+        String actualName = response.jsonPath().getString("name");
+        double actualPrice = response.jsonPath().getDouble("price");
+
         assertThat(actualName)
-                .as("Ожидаем название продукта: %a", productName)
-                .isEqualTo(SharedGoodsData.productName);
+                .as("Ожидаем название продукта: %a, но получили %b", expectedName, actualName)
+                .isEqualTo(product.name());
+        assertThat(actualPrice)
+                .as("Ожидаем цену продукта %s, а получили %d", product.price(), actualPrice)
+                .isEqualTo(product.price());
+        deleteProduct(product.id());
+    }
+
+    @Test
+    @DisplayName("PATCH /goods/{id} -> 200, удачное изменение цены продукта")
+    void patchProduct_returns200_onValidPriceUpdate() {
+        ProductData product = createProduct();
+        double anotherPrice = randomPrice();
+        Response response = given()
+                .spec(rs)
+                .body(new ProductRequest(product.name(), anotherPrice))
+                .log().all()
+                .when()
+                .patch("/goods/{id}", product.id())
+                .then()
+                .log().all()
+                .extract()
+                .response();
+
+        assertThat(response.statusCode())
+                .as("Ожидаем успех и статус 200")
+                .isEqualTo(200);
+
+        String actualName = response.jsonPath().getString("name");
+        double actualPrice = response.jsonPath().getDouble("price");
+
+        assertThat(actualName)
+                .as("Ожидаем название продукта: %a, но получили %b", product.name(), actualName)
+                .isEqualTo(product.name());
+        assertThat(actualPrice)
+                .as("Ожидаем цену продукта %s, а получили %d", anotherPrice, actualPrice)
+                .isEqualTo(anotherPrice);
+        deleteProduct(product.id());
     }
 
     @Test
     @DisplayName("PATCH /goods/{id} -> 400, когда пытаемся установить уже существуещее название продукта")
     void patchProduct_returns400_onDuplicateName() {
-        String otherName = randomName();
-
-        Response createResponse = given()
-                .spec(rs)
-                .body(new ProductRequest(otherName, randomPrice()))
-                .when()
-                .post("/goods/add");
-
-        assertThat(createResponse.statusCode())
-                .isEqualTo(200);
-        long otherId = createResponse.jsonPath().getInt("data.values()[0]");
-        SharedGoodsData.registerCreatedId(otherId);
+        ProductData product = createProduct();
 
         Response patchResponse = given()
                 .spec(rs)
-                .body(new ProductRequest(productName,randomPrice()))
+                .body(new ProductRequest(product.name(), randomPrice()))
                 .when()
-                .patch("/goods/{id}", otherId);
+                .patch("/goods/{id}", product.id())
+                .then()
+                .log().all()
+                .extract()
+                .response();
 
         assertThat(patchResponse.statusCode())
                 .as("Ожидаем ошибку, статус 400")
@@ -72,7 +106,11 @@ class GoodsPatchTest extends BaseTest {
                 .spec(rs)
                 .body(new ProductRequest(randomName(),randomPrice()))
                 .when()
-                .patch("/goods/{id}", 999_999_997L);
+                .patch("/goods/{id}", 9999)
+                .then()
+                .log().all()
+                .extract()
+                .response();;
 
         assertThat(response.statusCode())
                 .as("Ожидаем что такого продукта не существует, статус 404")

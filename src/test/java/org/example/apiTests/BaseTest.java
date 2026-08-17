@@ -2,6 +2,7 @@ package org.example.apiTests;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 
 public abstract class BaseTest {
@@ -12,5 +13,6 @@ public abstract class BaseTest {
             new RequestSpecBuilder()
                     .setBaseUri(BASE_URI)
                     .setAuth(RestAssured.basic(USERNAME, PASSWORD))
+                    .setContentType(ContentType.JSON)
                     .build();
 }

@@ -136,10 +136,10 @@ public class RESTAssuredFirstTaskTest {
                 .getFloat("goods.find { it.id == " + id + " }.price");
 
         assertThat(actualName)
-                .as("Название должно быть: " + name + "но пришло: " + actualName)
+                .as("Название должно быть: %s, но пришло: %d", name, actualName)
                 .isEqualTo(name);
         assertThat(actualPrice)
-                .as("Цена должна быть: " + price + "но пришла: " + actualPrice)
+                .as("Цена должна быть: %s, но пришла: %d", price, actualPrice)
                 .isEqualTo(price.floatValue());
     }
 }

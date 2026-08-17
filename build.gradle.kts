@@ -16,6 +16,11 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.24.2")
     // Source: https://mvnrepository.com/artifact/io.rest-assured/rest-assured
     implementation("io.rest-assured:rest-assured:5.5.6")
+    // Source: https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
+    implementation("com.fasterxml.jackson.core:jackson-core:2.22.1")
+    // Source: https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.22.1")
+
 }
 
 tasks.test {
