@@ -1,15 +1,14 @@
 package org.example.apiTests;
 
 import io.restassured.response.Response;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.example.apiTests.SharedGoodsData.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Order(2)
 @Tag("Theme4.2")
 class GoodsDeleteTest extends BaseTest {
 

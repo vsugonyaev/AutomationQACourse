@@ -1,9 +1,7 @@
 package org.example.apiTests;
 
 import io.restassured.response.Response;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.List;
 
@@ -11,6 +9,8 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.example.apiTests.SharedGoodsData.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Order(5)
 @Tag("Theme4.2")
 class GoodsListTest extends BaseTest {
 
@@ -129,5 +129,8 @@ class GoodsListTest extends BaseTest {
         assertThat(ids.contains(thirdProduct.id()))
                 .as("Третий продукт не должен быть в списке")
                 .isFalse();
+        deleteProduct(firstProduct.id());
+        deleteProduct(secondProduct.id());
+        deleteProduct(thirdProduct.id());
     }
 }

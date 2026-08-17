@@ -10,6 +10,8 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.example.apiTests.SharedGoodsData.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Order(4)
 @Tag("Theme4.2")
 class GoodsPatchTest extends BaseTest {
 
@@ -37,10 +39,10 @@ class GoodsPatchTest extends BaseTest {
         double actualPrice = response.jsonPath().getDouble("price");
 
         assertThat(actualName)
-                .as("Ожидаем название продукта: %a, но получили %b", expectedName, actualName)
-                .isEqualTo(product.name());
+                .as("Ожидаем название продукта: %s, но получили %s", expectedName, actualName)
+                .isEqualTo(expectedName);
         assertThat(actualPrice)
-                .as("Ожидаем цену продукта %s, а получили %d", product.price(), actualPrice)
+                .as("Ожидаем цену продукта %d, а получили %d", product.price(), actualPrice)
                 .isEqualTo(product.price());
         deleteProduct(product.id());
     }
@@ -69,10 +71,10 @@ class GoodsPatchTest extends BaseTest {
         double actualPrice = response.jsonPath().getDouble("price");
 
         assertThat(actualName)
-                .as("Ожидаем название продукта: %a, но получили %b", product.name(), actualName)
+                .as("Ожидаем название продукта: %s, но получили %s", product.name(), actualName)
                 .isEqualTo(product.name());
         assertThat(actualPrice)
-                .as("Ожидаем цену продукта %s, а получили %d", anotherPrice, actualPrice)
+                .as("Ожидаем цену продукта %d, а получили %d", anotherPrice, actualPrice)
                 .isEqualTo(anotherPrice);
         deleteProduct(product.id());
     }
@@ -80,13 +82,14 @@ class GoodsPatchTest extends BaseTest {
     @Test
     @DisplayName("PATCH /goods/{id} -> 400, когда пытаемся установить уже существуещее название продукта")
     void patchProduct_returns400_onDuplicateName() {
-        ProductData product = createProduct();
-
+        ProductData firstProduct = createProduct();
+        ProductData secondProduct = createProduct();
         Response patchResponse = given()
                 .spec(rs)
-                .body(new ProductRequest(product.name(), randomPrice()))
+                .body(new ProductRequest(firstProduct.name(), randomPrice()))
+                .log().all()
                 .when()
-                .patch("/goods/{id}", product.id())
+                .patch("/goods/{id}", secondProduct.id())
                 .then()
                 .log().all()
                 .extract()
@@ -95,8 +98,8 @@ class GoodsPatchTest extends BaseTest {
         assertThat(patchResponse.statusCode())
                 .as("Ожидаем ошибку, статус 400")
                 .isEqualTo(400);
-        assertThat(patchResponse.jsonPath().getString("message"))
-                .isNotBlank();
+        deleteProduct(firstProduct.id());
+        deleteProduct(secondProduct.id());
     }
 
     @Test

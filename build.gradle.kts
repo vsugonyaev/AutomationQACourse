@@ -44,6 +44,7 @@ tasks.register<Test>("runTheme31Tests") {
 
     finalizedBy("printTestRunOver")
 }
+
 tasks.register<Test>("runTheme32Tests") {
     group = "verification"
     description = "Запускает тесты с тегом Theme3.2"
@@ -54,6 +55,29 @@ tasks.register<Test>("runTheme32Tests") {
 
     finalizedBy("printTestRunOver")
 }
+
+tasks.register<Test>("runTheme42Tests") {
+    group = "verification"
+    description = "Запускает тесты с тегом Theme4.2"
+
+    useJUnitPlatform {
+        includeTags("Theme4.2")
+    }
+
+    finalizedBy("printTestRunOver")
+}
+
+tasks.register<Test>("runTheme41Tests") {
+    group = "verification"
+    description = "Запускает тесты с тегом Theme4.1"
+
+    useJUnitPlatform {
+        includeTags("Theme4.1")
+    }
+
+    finalizedBy("printTestRunOver")
+}
+
 tasks.register<Test>("runTheme21Tests") {
     group = "verification"
     description = "Запускает тесты с тегом Theme2.1"

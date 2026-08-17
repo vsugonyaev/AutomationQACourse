@@ -9,8 +9,14 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.example.apiTests.SharedGoodsData.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Order(1)
 @Tag("Theme4.2")
 public class GoodsAddTest extends BaseTest {
+    /*@BeforeAll
+    static void clearAllGoods() {
+        deleteAllProducts();
+    }*/
 
     @Test
     @DisplayName("POST /goods/add -> 200, когда запрос валидный")

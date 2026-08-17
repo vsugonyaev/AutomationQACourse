@@ -43,6 +43,7 @@ public final class SharedGoodsData {
         Response response = given()
                 .spec(rs)
                 .body(new ProductRequest(name, price))
+                .log().all()
                 .when()
                 .post("/goods/add")
                 .then()
@@ -62,6 +63,7 @@ public final class SharedGoodsData {
     public static void deleteProduct(int id) {
         Response response = given()
                 .spec(rs)
+                .log().all()
                 .when()
                 .delete("/goods/{id}", id)
                 .then()
@@ -72,6 +74,22 @@ public final class SharedGoodsData {
         assertThat(response.statusCode())
                 .as("Не удалось удалить продукт с id %s", id)
                 .isEqualTo(200);
+    }
+    public static void deleteAllProducts() {
+        Response response = given()
+                .spec(rs)
+                .log().all()
+                .when()
+                .get("/goods/list")
+                .then()
+                .log().all()
+                .extract()
+                .response();
+        List<Integer> allId = response.jsonPath().getList("goods.id");
+        for (Integer integer : allId) {
+            deleteProduct(integer);
+        }
+
     }
 
 }
