@@ -10,7 +10,7 @@ import java.time.Duration;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-public class UIUtils {
+public class SeleniumUIUtils {
     static WebDriver driver ;
     public static final String BASE_URL = "http://localhost:8080/";
     public static final String ADMIN_URL = "http://localhost:8080/admin";

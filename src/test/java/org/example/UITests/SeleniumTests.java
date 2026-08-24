@@ -10,7 +10,7 @@ import java.time.Duration;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.example.UITests.UIUtils.*;
+import static org.example.UITests.SeleniumUIUtils.*;
 
 @Tag("Theme6.1")
 public class SeleniumTests {
