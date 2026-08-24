@@ -7,6 +7,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -14,6 +16,7 @@ public class SeleniumUIUtils {
     static WebDriver driver ;
     public static final String BASE_URL = "http://localhost:8080/";
     public static final String ADMIN_URL = "http://localhost:8080/admin";
+    private static final List<String> createdProducts = new ArrayList<>();
 
 
     public static void init () {
@@ -23,17 +26,7 @@ public class SeleniumUIUtils {
         options.addArguments("--start-maximized");
         driver = new ChromeDriver(options);
     }
-    /*public static void closeAlert() {
-        try {
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
-            org.openqa.selenium.Alert alert = wait.until(ExpectedConditions.alertIsPresent());
-            alert.dismiss();
-            System.out.println("Окно базовой авторизации успешно появилось и было закрыто.");
-        } catch (org.openqa.selenium.TimeoutException e) {
-            System.out.println("Окно авторизации не появилось (возможно, уже было закрыто ранее). Продолжаем тест...");
-        }
-    }*/
-    public static void auth () {
+     public static void auth () {
         driver.get(ADMIN_URL);
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         WebElement usernameInput = wait.until(
@@ -44,6 +37,7 @@ public class SeleniumUIUtils {
         passwordInput.sendKeys("secret123");
         driver.findElement(By.cssSelector("button.primary")).click();
         }
+
     public static void createNewProduct (String name, double price) {
         System.out.println("Поступил запрос на создание товара: " + name);
         auth();
@@ -57,6 +51,7 @@ public class SeleniumUIUtils {
         WebElement createBtn = driver.findElement(By.id("add-btn"));
         createBtn.click();
         System.out.println("Товар успешно создан!");
+        hardRefresh(ADMIN_URL);
     }
     public static void deleteCreatedProduct(String name) {
         driver.get(ADMIN_URL);
@@ -83,6 +78,18 @@ public class SeleniumUIUtils {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(productRowLocator));
         System.out.println("Товар успешно удален!");
     }
+    public static void deleteAllCreatedProducts() {
+        auth();
+        System.out.println("Удаляем все созданные товары: " + createdProducts);
+        // Проходим по списку в обратном порядке, чтобы избежать проблем при удалении
+        for (int i = createdProducts.size() - 1; i >= 0; i--) {
+            String name = createdProducts.get(i);
+            deleteCreatedProduct(name);
+            createdProducts.remove(i); // удаляем из списка после попытки
+        }
+        hardRefresh(ADMIN_URL);
+    }
+
     public static void hardRefresh(String url) {
         driver.manage().deleteAllCookies();
         if (driver instanceof org.openqa.selenium.JavascriptExecutor) {

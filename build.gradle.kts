@@ -22,6 +22,8 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.22.1")
     // Source: https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
     implementation("org.seleniumhq.selenium:selenium-java:4.47.0")
+    // Source: https://mvnrepository.com/artifact/com.codeborne/selenide
+    implementation("com.codeborne:selenide:7.18.0")
 
 }
 

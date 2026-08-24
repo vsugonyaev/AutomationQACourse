@@ -25,6 +25,7 @@ public class SeleniumTests {
 
     @AfterEach
     void tearDownBrowser() {
+        deleteAllCreatedProducts();
         driver.quit();
         System.out.println("Test method end");
         System.out.println("==============================");
@@ -47,7 +48,7 @@ public class SeleniumTests {
                 .as("Цена созданного товара должна совпадать с отображаемой")
                 .isEqualTo(String.format("%.0f", productPrice));
         System.out.println("Проверили цену товара созданного товара, все ок.");
-        deleteCreatedProduct(productName1);
+        //deleteCreatedProduct(productName1);
     }
 
     @Test
@@ -74,7 +75,7 @@ public class SeleniumTests {
                 .as("Товар с именем '%s' должен отображаться в списке внутри корзины", productName1)
                 .isTrue();
         System.out.println("Увидели что товар добавился в корзину и отображается.");
-        deleteCreatedProduct(productName1);
+        //deleteCreatedProduct(productName1);
     }
 
     @Test
@@ -121,17 +122,16 @@ public class SeleniumTests {
         double productPrice2 = 20.00;
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         createNewProduct(productName1, productPrice1);
-        hardRefresh(ADMIN_URL);
         createNewProduct(productName2, productPrice2);
-        hardRefresh(BASE_URL);
-
+        driver.get(BASE_URL);
+        System.out.println("Ищем первый товар чтобы добавить в корзину");
         String selector1 = String.format("button.btn[data-name='%s']", productName1);
         WebElement addToCartBtn = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector1))
         );
         addToCartBtn.click();
         wait.until(ExpectedConditions.textToBePresentInElementLocated(
                 By.cssSelector("#cart-count"), "1"));
-        System.out.println("Успешно добавили первый товар в корзину.");
+        System.out.println("Счетчик увеличился.");
         String selector2 = String.format("button.btn[data-name='%s']", productName2);
         WebElement addToCartBtn2 = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector2))
         );
@@ -160,7 +160,7 @@ public class SeleniumTests {
         assertThat(cartItemsTexts)
                 .as("В корзине нет наших товаров!")
                 .contains(productName1, productName2);
-        deleteCreatedProduct(productName1);
-        deleteCreatedProduct(productName2);
+        //deleteCreatedProduct(productName1);
+        //deleteCreatedProduct(productName2);
     }
 }
