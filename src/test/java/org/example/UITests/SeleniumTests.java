@@ -48,7 +48,6 @@ public class SeleniumTests {
                 .as("Цена созданного товара должна совпадать с отображаемой")
                 .isEqualTo(String.format("%.0f", productPrice));
         System.out.println("Проверили цену товара созданного товара, все ок.");
-        //deleteCreatedProduct(productName1);
     }
 
     @Test
@@ -75,7 +74,6 @@ public class SeleniumTests {
                 .as("Товар с именем '%s' должен отображаться в списке внутри корзины", productName1)
                 .isTrue();
         System.out.println("Увидели что товар добавился в корзину и отображается.");
-        //deleteCreatedProduct(productName1);
     }
 
     @Test
@@ -160,7 +158,5 @@ public class SeleniumTests {
         assertThat(cartItemsTexts)
                 .as("В корзине нет наших товаров!")
                 .contains(productName1, productName2);
-        //deleteCreatedProduct(productName1);
-        //deleteCreatedProduct(productName2);
     }
 }

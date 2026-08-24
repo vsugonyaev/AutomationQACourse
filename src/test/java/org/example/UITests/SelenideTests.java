@@ -39,9 +39,7 @@ public class SelenideTests {
         $(selector).shouldBe(visible)
                 .shouldHave(attribute("data-price", String.format("%.0f", productPrice)));
         System.out.println("Увидели карточку товара на странице, все ок.");
-        //hardRefresh(BASE_URL);
-        //hardRefresh(ADMIN_URL);
-        //deleteCreatedProduct(productName1);
+
     }
 
     @Test
@@ -58,9 +56,6 @@ public class SelenideTests {
                 productName1);
         $x(xpathSelector).shouldBe(visible);
         System.out.println("Увидели что товар добавился в корзину и отображается.");
-        //hardRefresh(BASE_URL);
-        //hardRefresh(ADMIN_URL);
-        //deleteCreatedProduct(productName1);
     }
 
     @Test
@@ -110,10 +105,6 @@ public class SelenideTests {
         $$("#cart-items .cart-item").filterBy(text(productName1)).shouldHave(CollectionCondition.size(1));
         $$("#cart-items .cart-item").filterBy(text(productName2)).shouldHave(CollectionCondition.size(1));
         $$("#cart-items .cart-item").shouldHave(CollectionCondition.size(2));
-
-        //deleteCreatedProduct(productName1);
-        //hardRefresh(ADMIN_URL);
-        //deleteCreatedProduct(productName2);
     }
 
     @Test
@@ -140,11 +131,5 @@ public class SelenideTests {
 
         String alertText = confirm();
         System.out.println("Alert появился, текст: " + alertText);
-
-        /*deleteCreatedProduct(productName1);
-        hardRefresh(ADMIN_URL);
-        deleteCreatedProduct(productName2);
-        hardRefresh(ADMIN_URL);
-        deleteCreatedProduct(productName3);*/
     }
 }

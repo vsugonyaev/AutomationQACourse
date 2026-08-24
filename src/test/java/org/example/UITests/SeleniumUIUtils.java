@@ -81,11 +81,10 @@ public class SeleniumUIUtils {
     public static void deleteAllCreatedProducts() {
         auth();
         System.out.println("Удаляем все созданные товары: " + createdProducts);
-        // Проходим по списку в обратном порядке, чтобы избежать проблем при удалении
         for (int i = createdProducts.size() - 1; i >= 0; i--) {
             String name = createdProducts.get(i);
             deleteCreatedProduct(name);
-            createdProducts.remove(i); // удаляем из списка после попытки
+            createdProducts.remove(i);
         }
         hardRefresh(ADMIN_URL);
     }
