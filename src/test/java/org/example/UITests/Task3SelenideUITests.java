@@ -97,24 +97,17 @@ public class Task3SelenideUITests {
     @DisplayName("3.3. Войти в админку и добавить товар. Проверить уведомление после добавления товара.")
     void checkCreateProductNotificationTest() {
         open(ADMIN_URL);
-        System.out.println("Открыли админку");
         $("#username").shouldBe(visible).sendKeys("admin");
-        System.out.println("Ввели логин");
         $("#password").sendKeys("secret123");
-        System.out.println("Ввели пароль");
         $("button.primary").click();
-        System.out.println("Нажали войти");
         $("#n-name").shouldBe(visible).sendKeys(productName1);
-        System.out.println("Ищем инпут ввода название и вводим его");
         $("#n-price").sendKeys(String.valueOf(50));
-        System.out.println("Ищем инпут цены и вводим ее");
         $("#add-btn").click();
         createdProducts.add(productName1);
         System.out.println("Нажимаем кнопку добавления товара");
         $(".toast")
                 .shouldBe(visible)
                 .shouldHave(text("Товар успешно добавлен!"));
-        System.out.println("Проверили появление тоста");
         hardRefresh(ADMIN_URL);
     }
 
