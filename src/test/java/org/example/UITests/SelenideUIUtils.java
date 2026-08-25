@@ -13,7 +13,7 @@ public class SelenideUIUtils {
 
     public static final String BASE_URL = "http://localhost:8080/";
     public static final String ADMIN_URL = "http://localhost:8080/admin";
-    private static final List<String> createdProducts = new ArrayList<>();
+    public static final List<String> createdProducts = new ArrayList<>();
 
     public static void init() {
         ChromeOptions options = new ChromeOptions();
@@ -44,6 +44,9 @@ public class SelenideUIUtils {
         $("#n-name").shouldBe(visible).sendKeys(name);
         $("#n-price").sendKeys(String.valueOf(price));
         $("#add-btn").click();
+        $("#toast-container .toast")
+                .shouldBe(visible)
+                .shouldHave(text("Товар успешно добавлен!"));
         System.out.println("Товар успешно создан!");
         hardRefresh(ADMIN_URL);
         createdProducts.add(name);
@@ -56,15 +59,16 @@ public class SelenideUIUtils {
                 name
         );
         $x(xpathExpression).shouldBe(clickable).click();
-        confirm(); // подтверждаем alert
-        $x("//*[text()='Товар удален']").shouldBe(visible);
+        confirm();
+        $("#toast-container .toast")
+                .shouldBe(visible)
+                .shouldHave(text("Товар удален"));
         $x(String.format("//tr[td/input[@value='%s']]", name)).shouldBe(hidden);
         System.out.println("Товар успешно удален!");
     }
     public static void deleteAllCreatedProducts() {
         auth();
         System.out.println("Удаляем все созданные товары: " + createdProducts);
-        // Проходим по списку в обратном порядке, чтобы избежать проблем при удалении
         for (int i = createdProducts.size() - 1; i >= 0; i--) {
             String name = createdProducts.get(i);
             deleteCreatedProduct(name);
