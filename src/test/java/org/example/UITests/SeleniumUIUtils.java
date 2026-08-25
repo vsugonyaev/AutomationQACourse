@@ -51,6 +51,7 @@ public class SeleniumUIUtils {
         WebElement createBtn = driver.findElement(By.id("add-btn"));
         createBtn.click();
         System.out.println("Товар успешно создан!");
+        createdProducts.add(name);
         hardRefresh(ADMIN_URL);
     }
     public static void deleteCreatedProduct(String name) {
