@@ -85,10 +85,8 @@ public class SelenideTests {
         double productPrice1 = 15.00;
         double productPrice2 = 20.00;
         createNewProduct(productName1, productPrice1);
-        hardRefresh(ADMIN_URL);
         createNewProduct(productName2, productPrice2);
-        hardRefresh(BASE_URL);
-
+        open(BASE_URL);
         String selector1 = String.format("button.btn[data-name='%s']", productName1);
         $(selector1).shouldBe(clickable).click();
         $("#cart-count").shouldHave(text("1"));
@@ -114,12 +112,9 @@ public class SelenideTests {
         double price = 150.00;
 
         createNewProduct(productName1, price);
-        hardRefresh(ADMIN_URL);
         createNewProduct(productName2, price);
-        hardRefresh(ADMIN_URL);
         createNewProduct(productName3, price);
-        hardRefresh(BASE_URL);
-
+        open(BASE_URL);
 
         $("button.btn[data-name='" + productName1 + "']").shouldBe(clickable).click();
         $("button.btn[data-name='" + productName2 + "']").shouldBe(clickable).click();
