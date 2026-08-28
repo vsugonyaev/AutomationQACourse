@@ -1,13 +1,17 @@
 package org.example.UITests;
 
 import com.codeborne.selenide.Configuration;
+import io.restassured.http.ContentType;
 import org.openqa.selenium.chrome.ChromeOptions;
+import io.restassured.response.Response;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
+import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SelenideUIUtils {
 
@@ -81,5 +85,34 @@ public class SelenideUIUtils {
         localStorage().clear();
         sessionStorage().clear();
         open(url);
+    }
+    public static void createNewProductThroughApi(String name, double price) {
+        Response response = given()
+                .baseUri(BASE_URL)
+                .auth()
+                .basic("admin", "secret123")
+                .contentType(ContentType.JSON)
+                .body("""
+                        {
+                          "name": "%s",
+                          "price": %s
+                        }
+                        """.formatted(name, price))
+                .log().body()
+                .when()
+                .post("/goods/add")
+                .then()
+                .log().body()
+                .extract().response();
+
+        assertThat(response.statusCode())
+                .as("Ожидаем статус 200")
+                .isEqualTo(200);
+        var data = response.jsonPath().getMap("data");
+        assertThat(data)
+                .as("Ответ не пустой и содержит один объект")
+                .isNotNull()
+                .hasSize(1);
+        createdProducts.add(name);
     }
 }
