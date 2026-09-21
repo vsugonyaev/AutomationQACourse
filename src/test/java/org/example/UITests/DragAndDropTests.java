@@ -3,6 +3,7 @@ package org.example.UITests;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.DragAndDropOptions;
 import com.codeborne.selenide.SelenideElement;
+import org.example.config.ConfigReader;
 import org.junit.jupiter.api.*;
 
 import static com.codeborne.selenide.Condition.text;
@@ -35,7 +36,10 @@ public class DragAndDropTests {
     @DisplayName("1.1 Перетащить элемент в корзину с помощью Drag-and-Drop.")
     @Order(1)
     void dragAndDropTest() {
-        createNewProductThroughApi("Тестовый товар", 95);
+        createNewProductThroughApi(
+                ConfigReader.getStarterProductName(),
+                ConfigReader.getStarterProductPrice()
+        );
         System.out.println("Создали новый товар по апи.");
         sleep(1000);
         refresh();

@@ -1,5 +1,6 @@
 package org.example.UITests;
 
+import org.example.config.ConfigReader;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -34,7 +35,7 @@ public class SeleniumTests {
     @DisplayName("1.1. Добавить товар через админку, выйти на витрину и проверить, что товар отображается")
     void addProductAndMakeSureItsVisibleTest() {
         double productPrice = 15.00;
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(ConfigReader.getElementTimeoutMs()));
         createNewProduct(productName1, productPrice);
         driver.get(BASE_URL);
         String selector = String.format("div.product-card[data-name='%s']", productName1);
@@ -54,7 +55,7 @@ public class SeleniumTests {
     @DisplayName("1.2. Добавить товар в корзину и проверить, что он отображается")
     void addCreatedProductToCartAndMakeSureItsVisibleTest() {
         double productPrice = 15.00;
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(ConfigReader.getElementTimeoutMs()));
         createNewProduct(productName1, productPrice);
         driver.get(BASE_URL);
         String selector = String.format("button.btn[data-name='%s']", productName1);
@@ -81,7 +82,7 @@ public class SeleniumTests {
     void authInAdminPageWithInvalidCredits() {
         driver.get(ADMIN_URL);
         System.out.println("Начинаем проверку авторизации с неправильным логином");
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(ConfigReader.getElementTimeoutMs()));
         WebElement usernameInput = driver.findElement(By.id("username"));
         usernameInput.sendKeys("admin1");
         WebElement passwordInput = driver.findElement(By.id("password"));
@@ -118,7 +119,7 @@ public class SeleniumTests {
         String productName2 = "Тестовый товар2";
         double productPrice1 = 15.00;
         double productPrice2 = 20.00;
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(ConfigReader.getElementTimeoutMs()));
         createNewProduct(productName1, productPrice1);
         createNewProduct(productName2, productPrice2);
         driver.get(BASE_URL);

@@ -2,6 +2,7 @@ package org.example.UITests;
 
 import com.codeborne.selenide.Configuration;
 import io.restassured.http.ContentType;
+import org.example.config.ConfigReader;
 import org.openqa.selenium.chrome.ChromeOptions;
 import io.restassured.response.Response;
 
@@ -15,8 +16,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SelenideUIUtils {
 
-    public static final String BASE_URL = "http://localhost:8080/";
-    public static final String ADMIN_URL = "http://localhost:8080/admin";
+    public static final String BASE_URL = ConfigReader.getStandUrl();
+    public static final String ADMIN_URL = BASE_URL + "admin";
     public static final List<String> createdProducts = new ArrayList<>();
 
     public static void init() {
@@ -32,13 +33,13 @@ public class SelenideUIUtils {
 
         Configuration.browserCapabilities = options;
         Configuration.browser = "chrome";
-        Configuration.timeout = 5000;
+        Configuration.timeout = ConfigReader.getElementTimeoutMs();
     }
 
     public static void auth() {
         open(ADMIN_URL);
-        $("#username").shouldBe(visible).sendKeys("admin");
-        $("#password").sendKeys("secret123");
+        $("#username").shouldBe(visible).sendKeys(ConfigReader.getAdminUsername());
+        $("#password").sendKeys(ConfigReader.getAdminPassword());
         $("button.primary").click();
     }
 
@@ -90,7 +91,7 @@ public class SelenideUIUtils {
         Response response = given()
                 .baseUri(BASE_URL)
                 .auth()
-                .basic("admin", "secret123")
+                .basic(ConfigReader.getAdminUsername(), ConfigReader.getAdminPassword())
                 .contentType(ContentType.JSON)
                 .body("""
                         {

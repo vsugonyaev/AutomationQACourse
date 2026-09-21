@@ -1,5 +1,6 @@
 package org.example.UITests;
 
+import org.example.config.ConfigReader;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -14,8 +15,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class SeleniumUIUtils {
     static WebDriver driver ;
-    public static final String BASE_URL = "http://localhost:8080/";
-    public static final String ADMIN_URL = "http://localhost:8080/admin";
+    public static final String BASE_URL = ConfigReader.getStandUrl();
+    public static final String ADMIN_URL = BASE_URL + "admin";
     private static final List<String> createdProducts = new ArrayList<>();
 
 
@@ -28,20 +29,20 @@ public class SeleniumUIUtils {
     }
      public static void auth () {
         driver.get(ADMIN_URL);
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(ConfigReader.getElementTimeoutMs()));
         WebElement usernameInput = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(By.id("username"))
         );
-        usernameInput.sendKeys("admin");
+        usernameInput.sendKeys(ConfigReader.getAdminUsername());
         WebElement passwordInput = driver.findElement(By.id("password"));
-        passwordInput.sendKeys("secret123");
+        passwordInput.sendKeys(ConfigReader.getAdminPassword());
         driver.findElement(By.cssSelector("button.primary")).click();
         }
 
     public static void createNewProduct (String name, double price) {
         System.out.println("Поступил запрос на создание товара: " + name);
         auth();
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(ConfigReader.getElementTimeoutMs()));
         WebElement productNameInput = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(By.id("n-name"))
         );
@@ -61,7 +62,7 @@ public class SeleniumUIUtils {
                 "//tr[td/input[@value='%s']]//button[contains(@class, 'btn-del')]",
                 name
         );
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(ConfigReader.getElementTimeoutMs()));
         WebElement deleteBtn = wait.until(
                 ExpectedConditions.elementToBeClickable(By.xpath(xpathExpression))
         );
