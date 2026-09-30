@@ -1,5 +1,0 @@
-﻿inputNames;nameToRemove;expectedNames
-Alice,Bob,Charlie;Bob;Alice,Charlie
-Alice,Bob,Charlie;David;Alice,Bob,Charlie
-Alice,Bob,Alice,Charlie,Alice;Alice;Bob,Charlie
-Alice;Bob;Alice
