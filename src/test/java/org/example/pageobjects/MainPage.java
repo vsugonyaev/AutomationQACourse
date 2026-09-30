@@ -4,6 +4,7 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 import org.example.config.ConfigReader;
 
 import static com.codeborne.selenide.Selenide.$;
@@ -19,6 +20,7 @@ public class MainPage {
     private final ElementsCollection cartItems = $$("#cart-items .cart-item");
     private final ElementsCollection toasts = $$("#toast-container .toast");
 
+    @Step("Открыть главную страницу магазина")
     public MainPage open() {
         Selenide.open(ConfigReader.getStandUrl());
         return this;
@@ -32,30 +34,36 @@ public class MainPage {
         return $(String.format("button.btn[data-name='%s']", productName));
     }
 
+    @Step("Кликнуть 'Добавить в корзину' у товара {productName}")
     public MainPage clickAddToCart(String productName) {
         addToCartButton(productName).shouldBe(Condition.clickable).click();
         return this;
     }
 
+    @Step("Открыть корзину")
     public MainPage clickOpenCart() {
         cartButton.shouldBe(Condition.clickable).click();
         return this;
     }
 
+    @Step("Нажать кнопку оформления заказа")
     public MainPage clickMakeOrder() {
         makeOrderButton.shouldBe(Condition.clickable).click();
         return this;
     }
 
+    @Step("Удалить первый товар из корзины")
     public MainPage clickRemoveFirstCartItem() {
         $("[data-action='remove']").shouldBe(Condition.clickable).click();
         return this;
     }
 
+    @Step("Прочитать значение счётчика корзины")
     public String getCartCountText() {
         return cartCount.shouldBe(Condition.visible).getText();
     }
 
+    @Step("Прочитать итоговую сумму корзины")
     public String getTotalPriceText() {
         return totalPrice.shouldBe(Condition.visible).getText();
     }

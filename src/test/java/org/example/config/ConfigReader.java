@@ -21,6 +21,7 @@ public final class ConfigReader {
             throw new IllegalStateException("Не удалось прочитать файл конфигурации: " + CONFIG_FILE, e);
         }
         printConfig();
+        AllureSetup.init();
     }
 
     private ConfigReader() {

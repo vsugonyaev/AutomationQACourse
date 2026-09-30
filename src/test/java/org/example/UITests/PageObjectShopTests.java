@@ -2,17 +2,19 @@ package org.example.UITests;
 
 import org.example.apiTests.SharedGoodsData;
 import org.example.config.ConfigReader;
-import org.example.pageobjects.AdminLoginPage;
 import org.example.pageobjects.AdminPage;
 import org.example.pageobjects.AdminPageAssert;
 import org.example.pageobjects.MainPage;
 import org.example.pageobjects.MainPageAssert;
+import org.example.pageobjects.ShopSteps;
 import org.junit.jupiter.api.*;
 
 import static com.codeborne.selenide.Selenide.closeWebDriver;
 
 @Tag("Theme9")
 public class PageObjectShopTests {
+
+    private final ShopSteps shopSteps = new ShopSteps();
 
     @BeforeEach
     void setUp() {
@@ -37,14 +39,12 @@ public class PageObjectShopTests {
         String product3 = "Тестовый товар3";
         double price = 90.00;
 
-        AdminPage adminPage = new AdminLoginPage()
-                .open()
-                .login(ConfigReader.getAdminUsername(), ConfigReader.getAdminPassword());
+        AdminPage adminPage = shopSteps.loginAsAdmin(ConfigReader.getAdminUsername(), ConfigReader.getAdminPassword());
         adminPage.addProduct(product1, price)
                 .addProduct(product2, price)
                 .addProduct(product3, price);
 
-        MainPage mainPage = new MainPage().open();
+        MainPage mainPage = shopSteps.openShop();
         MainPageAssert mainPageAssert = new MainPageAssert(mainPage);
 
         mainPage.clickAddToCart(product1);
@@ -52,8 +52,7 @@ public class PageObjectShopTests {
         mainPage.clickAddToCart(product3);
         mainPageAssert.cartCountHasText("3");
 
-        mainPage.clickOpenCart();
-        mainPage.clickMakeOrder();
+        shopSteps.payCart(mainPage);
         mainPageAssert.lastToastHasText("Заказ принят в обработку!");
     }
 
@@ -66,13 +65,11 @@ public class PageObjectShopTests {
         double price2 = 42.07;
         String expectedTotal = String.format("%.0f", price1 + price2);
 
-        AdminPage adminPage = new AdminLoginPage()
-                .open()
-                .login(ConfigReader.getAdminUsername(), ConfigReader.getAdminPassword());
+        AdminPage adminPage = shopSteps.loginAsAdmin(ConfigReader.getAdminUsername(), ConfigReader.getAdminPassword());
         adminPage.addProduct(product1, price1)
                 .addProduct(product2, price2);
 
-        MainPage mainPage = new MainPage().open();
+        MainPage mainPage = shopSteps.openShop();
         MainPageAssert mainPageAssert = new MainPageAssert(mainPage);
 
         mainPage.clickAddToCart(product1);
@@ -89,9 +86,7 @@ public class PageObjectShopTests {
         String productName = "Тестовый товар1";
         double price = 50.00;
 
-        AdminPage adminPage = new AdminLoginPage()
-                .open()
-                .login(ConfigReader.getAdminUsername(), ConfigReader.getAdminPassword());
+        AdminPage adminPage = shopSteps.loginAsAdmin(ConfigReader.getAdminUsername(), ConfigReader.getAdminPassword());
         AdminPageAssert adminPageAssert = new AdminPageAssert(adminPage);
 
         adminPage.addProduct(productName, price);
@@ -106,26 +101,22 @@ public class PageObjectShopTests {
         String newProductName = "Обновленное название";
         double newPrice = 101.03;
 
-        AdminPage adminPage = new AdminLoginPage()
-                .open()
-                .login(ConfigReader.getAdminUsername(), ConfigReader.getAdminPassword());
+        AdminPage adminPage = shopSteps.loginAsAdmin(ConfigReader.getAdminUsername(), ConfigReader.getAdminPassword());
         AdminPageAssert adminPageAssert = new AdminPageAssert(adminPage);
 
         adminPage.addProduct(productName, price);
         adminPageAssert.lastToastHasText("Товар успешно добавлен!");
 
-        adminPage.setProductName(productName, newProductName);
-        adminPage.clickUpdate(productName);
+        shopSteps.renameProduct(adminPage, productName, newProductName);
         adminPageAssert.lastToastMatches("Товар.*обновлен");
 
-        MainPage mainPage = new MainPage().open();
+        MainPage mainPage = shopSteps.openShop();
         MainPageAssert mainPageAssert = new MainPageAssert(mainPage);
         mainPageAssert.productCardIsVisible(newProductName);
         mainPageAssert.productCardHasPrice(newProductName, String.valueOf(price));
 
         adminPage.open();
-        adminPage.setProductPrice(newProductName, newPrice);
-        adminPage.clickUpdate(newProductName);
+        shopSteps.changeProductPrice(adminPage, newProductName, newPrice);
         adminPageAssert.lastToastMatches("Товар.*обновлен");
 
         mainPage.open();

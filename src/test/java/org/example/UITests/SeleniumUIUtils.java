@@ -1,5 +1,6 @@
 package org.example.UITests;
 
+import io.qameta.allure.Step;
 import org.example.config.ConfigReader;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -27,6 +28,7 @@ public class SeleniumUIUtils {
         options.addArguments("--start-maximized");
         driver = new ChromeDriver(options);
     }
+     @Step("Авторизоваться в админке")
      public static void auth () {
         driver.get(ADMIN_URL);
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(ConfigReader.getElementTimeoutMs()));
@@ -39,6 +41,7 @@ public class SeleniumUIUtils {
         driver.findElement(By.cssSelector("button.primary")).click();
         }
 
+    @Step("Создать товар {name} ценой {price} через админку")
     public static void createNewProduct (String name, double price) {
         System.out.println("Поступил запрос на создание товара: " + name);
         auth();
@@ -55,6 +58,7 @@ public class SeleniumUIUtils {
         createdProducts.add(name);
         hardRefresh(ADMIN_URL);
     }
+    @Step("Удалить товар {name} через админку")
     public static void deleteCreatedProduct(String name) {
         driver.get(ADMIN_URL);
         System.out.println("Поступил запрос на удаление товара: " + name);
@@ -80,6 +84,7 @@ public class SeleniumUIUtils {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(productRowLocator));
         System.out.println("Товар успешно удален!");
     }
+    @Step("Удалить все созданные в тесте товары через админку")
     public static void deleteAllCreatedProducts() {
         auth();
         System.out.println("Удаляем все созданные товары: " + createdProducts);
@@ -91,6 +96,7 @@ public class SeleniumUIUtils {
         hardRefresh(ADMIN_URL);
     }
 
+    @Step("Обновить страницу {url} с очисткой cookies/storage")
     public static void hardRefresh(String url) {
         driver.manage().deleteAllCookies();
         if (driver instanceof org.openqa.selenium.JavascriptExecutor) {

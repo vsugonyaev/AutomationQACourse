@@ -1,5 +1,6 @@
 package org.example.apiTests;
 
+import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 
@@ -12,37 +13,55 @@ import static org.example.apiTests.SharedGoodsData.*;
 @Tag("Theme4.2")
 class GoodsGetTest extends BaseTest {
 
+    @Step("Отправить GET /goods/{id}")
+    private Response getGood(int id) {
+        return given()
+                .spec(rs)
+                .log().all()
+                .when()
+                .get("/goods/{id}", id)
+                .then()
+                .log().all()
+                .extract()
+                .response();
+    }
+
+    @Step("Проверить, что код ответа равен {expectedStatus}")
+    private void assertStatusCode(Response response, int expectedStatus, String message) {
+        assertThat(response.statusCode())
+                .as(message)
+                .isEqualTo(expectedStatus);
+    }
+
+    @Step("Проверить, что тело ответа не пустое")
+    private void assertBodyNotEmpty(Response response) {
+        assertThat(response.body())
+                .as("Ответ не пустой и содержит один объект")
+                .isNotNull();
+    }
+
+    @Step("Проверить название и цену товара в ответе")
+    private void assertProductData(Response response, String expectedName, double expectedPrice) {
+        String actualName = response.jsonPath().getString("name");
+        assertThat(actualName)
+                .as("Ожидаем увидеть название %s, а получили %s", expectedName, actualName)
+                .isEqualTo(expectedName);
+
+        double actualPrice = response.jsonPath().getDouble("price");
+        assertThat(actualPrice)
+                .as("Ожидаем увидеть цену %s, а получили %s", expectedPrice, actualPrice)
+                .isEqualTo(expectedPrice);
+    }
+
     @Test
     @DisplayName("GET /goods/{id} -> 200, успешно возращается ранее созданный продукт")
     void getProduct_returns200_whenExists() {
         ProductData product = createProduct();
-        Response response = given()
-                .spec(rs)
-                .log().all()
-                .when()
-                .get("/goods/{id}", product.id())
-                .then()
-                .log().all()
-                .extract()
-                .response();;
+        Response response = getGood(product.id());
 
-        assertThat(response.statusCode())
-                .as("Ожидаем статус 200")
-                .isEqualTo(200);
-
-        assertThat(response.body())
-                .as("Ответ не пустой и содержит один объект")
-                .isNotNull();
-
-        String actualName = response.jsonPath().getString("name");
-        assertThat(actualName)
-                .as("Ожидаем увидеть название %s, а получили %d", product.name(), actualName)
-                .isEqualTo(product.name());
-
-        double actualPrice = response.jsonPath().getDouble("price");
-        assertThat(actualPrice)
-                .as("Ожидаем увидеть цену %s, а получили %d", product.price(), actualPrice)
-                .isEqualTo(product.price());
+        assertStatusCode(response, 200, "Ожидаем статус 200");
+        assertBodyNotEmpty(response);
+        assertProductData(response, product.name(), product.price());
 
         int productId = response.jsonPath().getInt("id");
         deleteProduct(productId);
@@ -51,18 +70,8 @@ class GoodsGetTest extends BaseTest {
     @Test
     @DisplayName("GET /goods/{id} -> 404, если продукта с таким id не существует")
     void getProduct_returns404_whenMissing() {
-        Response response = given()
-                .spec(rs)
-                .log().all()
-                .when()
-                .get("/goods/{id}", 999)
-                .then()
-                .log().all()
-                .extract()
-                .response();;
+        Response response = getGood(999);
 
-        assertThat(response.statusCode())
-                .as("Ожидаем что такого продукта не существует, статус должен быть 404")
-                .isEqualTo(404);
+        assertStatusCode(response, 404, "Ожидаем что такого продукта не существует, статус должен быть 404");
     }
 }

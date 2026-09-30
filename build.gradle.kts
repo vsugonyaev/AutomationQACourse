@@ -11,7 +11,15 @@ repositories {
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
+    // Keeps real parameter names available at runtime so Allure @Step message
+    // placeholders like {productName} resolve instead of staying literal.
+    options.compilerArgs.add("-parameters")
 }
+
+val allureVersion = "2.29.0"
+val aspectjVersion = "1.9.22"
+
+val allureCli: Configuration by configurations.creating
 
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
@@ -29,11 +37,58 @@ dependencies {
     // Source: https://mvnrepository.com/artifact/com.codeborne/selenide
     implementation("com.codeborne:selenide:7.18.0")
 
+    // Allure reporting
+    testImplementation(platform("io.qameta.allure:allure-bom:$allureVersion"))
+    testImplementation("io.qameta.allure:allure-junit5")
+    testImplementation("io.qameta.allure:allure-selenide")
+    testImplementation("io.qameta.allure:allure-rest-assured")
+    // AspectJ weaver is required at runtime for @Step/@Attachment annotations to be picked up
+    testImplementation("org.aspectj:aspectjweaver:$aspectjVersion")
+
+    allureCli("io.qameta.allure:allure-commandline:$allureVersion@zip")
 }
 
-tasks.test {
+tasks.withType<Test> {
     useJUnitPlatform()
     group = "verification"
+
+    doFirst {
+        val weaverJar = configurations.testRuntimeClasspath.get()
+            .files
+            .first { it.name.startsWith("aspectjweaver") }
+        jvmArgs("-javaagent:${weaverJar.absolutePath}")
+    }
+
+    systemProperty("allure.results.directory", layout.buildDirectory.dir("allure-results").get().asFile.absolutePath)
+}
+
+val unzipAllureCli by tasks.registering(Copy::class) {
+    from(zipTree(allureCli.singleFile))
+    into(layout.buildDirectory.dir("allure-cli"))
+}
+
+tasks.register<Exec>("allureReport") {
+    dependsOn(unzipAllureCli)
+    group = "verification"
+    description = "Генерирует HTML Allure-отчёт из build/allure-results в build/allure-report"
+    workingDir = projectDir
+    commandLine(
+        "cmd", "/c",
+        layout.buildDirectory.dir("allure-cli/allure-$allureVersion/bin/allure.bat").get().asFile.absolutePath,
+        "generate", "build/allure-results", "-o", "build/allure-report", "--clean"
+    )
+}
+
+tasks.register<Exec>("allureServe") {
+    dependsOn(unzipAllureCli)
+    group = "verification"
+    description = "Поднимает локальный сервер и открывает Allure-отчёт в браузере (Ctrl+C, чтобы остановить)"
+    workingDir = projectDir
+    commandLine(
+        "cmd", "/c",
+        layout.buildDirectory.dir("allure-cli/allure-$allureVersion/bin/allure.bat").get().asFile.absolutePath,
+        "serve", "build/allure-results"
+    )
 }
 
 tasks.register( "runAllTests") {

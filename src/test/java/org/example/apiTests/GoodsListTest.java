@@ -1,5 +1,6 @@
 package org.example.apiTests;
 
+import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 
@@ -18,16 +19,12 @@ class GoodsListTest extends BaseTest {
         deleteAllProducts();
     }
 
-    @Test
-    @DisplayName("GET /goods/list -> 200, в ответе есть все созданные продукты")
-    void listProducts_returns200_containsAllCreatedProductsWithCorrectData() {
-        ProductData firstProduct = createProduct();
-        ProductData secondProduct = createProduct();
-        ProductData thirdProduct = createProduct();
-        Response response = given()
+    @Step("Отправить GET /goods/list, page={page}, size={size}")
+    private Response getGoodsList(int page, int size) {
+        return given()
                 .spec(rs)
-                .queryParam("page", 0)
-                .queryParam("size", 1000)
+                .queryParam("page", page)
+                .queryParam("size", size)
                 .log().all()
                 .when()
                 .get("/goods/list")
@@ -35,47 +32,65 @@ class GoodsListTest extends BaseTest {
                 .log().all()
                 .extract()
                 .response();
+    }
 
-        assertThat(response.statusCode()).isEqualTo(200);
+    @Step("Проверить, что код ответа равен {expectedStatus}")
+    private void assertStatusCode(Response response, int expectedStatus) {
+        assertThat(response.statusCode()).isEqualTo(expectedStatus);
+    }
+
+    @Step("Проверить, что товар {product} присутствует в списке с корректными данными")
+    private void assertProductInList(Response response, ProductData product) {
         List<Integer> ids = response.jsonPath().getList("goods.id");
         List<String> names = response.jsonPath().getList("goods.name");
         List<Double> prices = response.jsonPath().getList("goods.price", Double.class);
-        List<ProductData> products = List.of(firstProduct, secondProduct, thirdProduct);
-        for (ProductData product : products) {
 
-            int index = ids.indexOf(product.id());
+        int index = ids.indexOf(product.id());
 
-            assertThat(index)
-                    .as("Продукт с id %s должен быть в списке", product.id())
-                    .isNotEqualTo(-1);
+        assertThat(index)
+                .as("Продукт с id %s должен быть в списке", product.id())
+                .isNotEqualTo(-1);
 
-            assertThat(names.get(index))
-                    .as("Ожидаем что название продукта %s, а получили %d", product.name(), names.get(index))
-                    .isEqualTo(product.name());
+        assertThat(names.get(index))
+                .as("Ожидаем что название продукта %s, а получили %s", product.name(), names.get(index))
+                .isEqualTo(product.name());
 
-            assertThat(prices.get(index))
-                    .as("Ожидаем что цена продукта %d, а получили %d", product.price(), prices.get(index))
-                    .isEqualTo(product.price());
+        assertThat(prices.get(index))
+                .as("Ожидаем что цена продукта %s, а получили %s", product.price(), prices.get(index))
+                .isEqualTo(product.price());
+    }
+
+    @Step("Проверить, что товар {product} отсутствует в списке")
+    private void assertProductNotInList(Response response, ProductData product) {
+        List<Integer> ids = response.jsonPath().getList("goods.id");
+        assertThat(ids.contains(product.id()))
+                .as("Продукт %s не должен быть в списке", product.name())
+                .isFalse();
+    }
+
+    @Test
+    @DisplayName("GET /goods/list -> 200, в ответе есть все созданные продукты")
+    void listProducts_returns200_containsAllCreatedProductsWithCorrectData() {
+        ProductData firstProduct = createProduct();
+        ProductData secondProduct = createProduct();
+        ProductData thirdProduct = createProduct();
+        Response response = getGoodsList(0, 1000);
+
+        assertStatusCode(response, 200);
+        for (ProductData product : List.of(firstProduct, secondProduct, thirdProduct)) {
+            assertProductInList(response, product);
         }
         deleteProduct(firstProduct.id());
         deleteProduct(secondProduct.id());
         deleteProduct(thirdProduct.id());
-}
+    }
 
     @Test
     @DisplayName("GET /goods/list -> 200 с дефолтными параметрами пагинации")
     void listProducts_returns200_withDefaults() {
         ProductData product = createProduct();
-        Response response = given()
-                .spec(rs)
-                .log().all()
-                .when().get("/goods/list")
-                .then()
-                .log().all()
-                .extract()
-                .response();
-        assertThat(response.statusCode())
-                .isEqualTo(200);
+        Response response = getGoodsList(0, 1000);
+        assertStatusCode(response, 200);
         deleteProduct(product.id());
     }
 
@@ -85,54 +100,13 @@ class GoodsListTest extends BaseTest {
         ProductData firstProduct = createProduct();
         ProductData secondProduct = createProduct();
         ProductData thirdProduct = createProduct();
-        Response page0 = given()
-                .spec(rs)
-                .queryParam("page", 0)
-                .queryParam("size", 2)
-                .log().all()
-                .when()
-                .get("/goods/list")
-                .then()
-                .log().all()
-                .extract()
-                .response();
+        Response page0 = getGoodsList(0, 2);
 
-        assertThat(page0.statusCode()).isEqualTo(200);
-        List<Integer> ids = page0.jsonPath().getList("goods.id");
-        List<String> names = page0.jsonPath().getList("goods.name");
-        List<Double> prices = page0.jsonPath().getList("goods.price", Double.class);
+        assertStatusCode(page0, 200);
+        assertProductInList(page0, firstProduct);
+        assertProductInList(page0, secondProduct);
+        assertProductNotInList(page0, thirdProduct);
 
-        int index1 = ids.indexOf(firstProduct.id());
-
-        assertThat(index1)
-                .as("Первый продукт должен быть в списке")
-                .isNotEqualTo(-1);
-
-        assertThat(names.get(index1))
-                .as("Ожидаем что название продукта %s, а получили %d", firstProduct.name(), names.get(index1))
-                .isEqualTo(firstProduct.name());
-
-        assertThat(prices.get(index1))
-                .as("Ожидаем что цена продукта %s, а получили %d", firstProduct.price(), prices.get(index1))
-                .isEqualTo(firstProduct.price());
-
-        int index2 = ids.indexOf(secondProduct.id());
-
-        assertThat(index2)
-                .as("Второй продукт должен быть в списке")
-                .isNotEqualTo(-1);
-
-        assertThat(names.get(index2))
-                .as("Ожидаем что название продукта %s, а получили %d", secondProduct.name(), names.get(index2))
-                .isEqualTo(secondProduct.name());
-
-        assertThat(prices.get(index2))
-                .as("Ожидаем что цена продукта %s, а получили %d", secondProduct.price(), prices.get(index2))
-                .isEqualTo(secondProduct.price());
-
-        assertThat(ids.contains(thirdProduct.id()))
-                .as("Третий продукт не должен быть в списке")
-                .isFalse();
         deleteProduct(firstProduct.id());
         deleteProduct(secondProduct.id());
         deleteProduct(thirdProduct.id());

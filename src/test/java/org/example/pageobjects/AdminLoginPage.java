@@ -3,6 +3,7 @@ package org.example.pageobjects;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 import org.example.config.ConfigReader;
 
 import static com.codeborne.selenide.Selenide.$;
@@ -14,32 +15,38 @@ public class AdminLoginPage {
     private final SelenideElement loginButton = $("button.primary");
     private final SelenideElement errorAlert = $("div.alert.alert-danger");
 
+    @Step("Открыть страницу входа в админку")
     public AdminLoginPage open() {
         Selenide.open(ConfigReader.getStandUrl() + "admin");
         return this;
     }
 
+    @Step("Ввести логин {username}")
     public AdminLoginPage enterUsername(String username) {
         usernameInput.shouldBe(Condition.visible).sendKeys(username);
         return this;
     }
 
+    @Step("Ввести пароль")
     public AdminLoginPage enterPassword(String password) {
         passwordInput.shouldBe(Condition.visible).sendKeys(password);
         return this;
     }
 
+    @Step("Нажать кнопку 'Войти'")
     public AdminPage clickLoginButton() {
         loginButton.shouldBe(Condition.clickable).click();
         return new AdminPage();
     }
 
+    @Step("Войти в админку под пользователем {username}")
     public AdminPage login(String username, String password) {
         enterUsername(username);
         enterPassword(password);
         return clickLoginButton();
     }
 
+    @Step("Прочитать текст сообщения об ошибке авторизации")
     public String getErrorMessageText() {
         return errorAlert.shouldBe(Condition.visible).getText();
     }

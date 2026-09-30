@@ -1,6 +1,7 @@
 package org.example.UITests;
 
 import com.codeborne.selenide.Configuration;
+import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
 import org.example.config.ConfigReader;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -36,6 +37,7 @@ public class SelenideUIUtils {
         Configuration.timeout = ConfigReader.getElementTimeoutMs();
     }
 
+    @Step("Авторизоваться в админке")
     public static void auth() {
         open(ADMIN_URL);
         $("#username").shouldBe(visible).sendKeys(ConfigReader.getAdminUsername());
@@ -43,6 +45,7 @@ public class SelenideUIUtils {
         $("button.primary").click();
     }
 
+    @Step("Создать товар {name} ценой {price} через админку")
     public static void createNewProduct(String name, double price) {
         System.out.println("Поступил запрос на создание товара: " + name);
         auth();
@@ -57,6 +60,7 @@ public class SelenideUIUtils {
         createdProducts.add(name);
     }
 
+    @Step("Удалить товар {name} через админку")
     public static void deleteCreatedProduct(String name) {
         System.out.println("Поступил запрос на удаление товара: " + name);
         String xpathExpression = String.format(
@@ -71,6 +75,7 @@ public class SelenideUIUtils {
         $x(String.format("//tr[td/input[@value='%s']]", name)).shouldBe(hidden);
         System.out.println("Товар успешно удален!");
     }
+    @Step("Удалить все созданные в тесте товары через админку")
     public static void deleteAllCreatedProducts() {
         auth();
         System.out.println("Удаляем все созданные товары: " + createdProducts);
@@ -81,14 +86,17 @@ public class SelenideUIUtils {
         }
         hardRefresh(ADMIN_URL);
     }
+    @Step("Обновить страницу {url} с очисткой cookies/storage")
     public static void hardRefresh(String url) {
         clearBrowserCookies();
         localStorage().clear();
         sessionStorage().clear();
         open(url);
     }
-    public static void createNewProductThroughApi(String name, double price) {
-        Response response = given()
+
+    @Step("Отправить POST /goods/add с товаром {name}, цена {price}")
+    private static Response postCreateProductThroughApi(String name, double price) {
+        return given()
                 .baseUri(BASE_URL)
                 .auth()
                 .basic(ConfigReader.getAdminUsername(), ConfigReader.getAdminPassword())
@@ -105,7 +113,10 @@ public class SelenideUIUtils {
                 .then()
                 .log().body()
                 .extract().response();
+    }
 
+    @Step("Проверить, что товар успешно создан через API")
+    private static void assertProductCreatedThroughApi(Response response) {
         assertThat(response.statusCode())
                 .as("Ожидаем статус 200")
                 .isEqualTo(200);
@@ -114,6 +125,12 @@ public class SelenideUIUtils {
                 .as("Ответ не пустой и содержит один объект")
                 .isNotNull()
                 .hasSize(1);
+    }
+
+    @Step("Создать товар {name} ценой {price} через API")
+    public static void createNewProductThroughApi(String name, double price) {
+        Response response = postCreateProductThroughApi(name, price);
+        assertProductCreatedThroughApi(response);
         createdProducts.add(name);
     }
 }

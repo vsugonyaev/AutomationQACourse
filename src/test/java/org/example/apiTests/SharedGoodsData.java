@@ -1,5 +1,6 @@
 package org.example.apiTests;
 
+import io.qameta.allure.Step;
 import io.restassured.response.Response;
 
 import java.util.List;
@@ -32,11 +33,9 @@ public final class SharedGoodsData {
             double price
     ) {}
 
-    public static ProductData createProduct() {
-        String name = randomName();
-        double price = randomPrice();
-
-        Response response = given()
+    @Step("Отправить POST /goods/add с товаром {name}, цена {price}")
+    private static Response postCreateProduct(String name, double price) {
+        return given()
                 .spec(rs)
                 .body(new ProductRequest(name, price))
                 .log().all()
@@ -46,18 +45,31 @@ public final class SharedGoodsData {
                 .log().all()
                 .extract()
                 .response();
+    }
 
+    @Step("Проверить, что продукт успешно создан (статус 200)")
+    private static void assertProductCreated(Response response) {
         assertThat(response.statusCode())
                 .as("Не удалось создать тестовый продукт")
                 .isEqualTo(200);
+    }
+
+    @Step("Создать тестовый продукт через API")
+    public static ProductData createProduct() {
+        String name = randomName();
+        double price = randomPrice();
+
+        Response response = postCreateProduct(name, price);
+        assertProductCreated(response);
 
         int id = response.jsonPath().getInt("data.id");
 
         return new ProductData(id, name, price);
     }
 
-    public static void deleteProduct(int id) {
-        Response response = given()
+    @Step("Отправить DELETE /goods/{id}")
+    private static Response deleteGoodById(int id) {
+        return given()
                 .spec(rs)
                 .log().all()
                 .when()
@@ -66,13 +78,24 @@ public final class SharedGoodsData {
                 .log().all()
                 .extract()
                 .response();
+    }
 
+    @Step("Проверить, что продукт с id {id} успешно удалён (статус 200)")
+    private static void assertProductDeleted(Response response, int id) {
         assertThat(response.statusCode())
                 .as("Не удалось удалить продукт с id %s", id)
                 .isEqualTo(200);
     }
-    public static void deleteAllProducts() {
-        Response response = given()
+
+    @Step("Удалить продукт с id {id} через API")
+    public static void deleteProduct(int id) {
+        Response response = deleteGoodById(id);
+        assertProductDeleted(response, id);
+    }
+
+    @Step("Отправить GET /goods/list")
+    private static Response getGoodsList() {
+        return given()
                 .spec(rs)
                 .log().all()
                 .when()
@@ -81,6 +104,11 @@ public final class SharedGoodsData {
                 .log().all()
                 .extract()
                 .response();
+    }
+
+    @Step("Удалить все продукты через API")
+    public static void deleteAllProducts() {
+        Response response = getGoodsList();
         List<Integer> allId = response.jsonPath().getList("goods.id");
         for (Integer integer : allId) {
             deleteProduct(integer);
