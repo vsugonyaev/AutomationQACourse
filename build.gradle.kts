@@ -145,6 +145,17 @@ tasks.register<Test>("runTheme22Tests") {
 
     finalizedBy("printTestRunOver")
 }
+tasks.register<Test>("runTheme9Tests") {
+    group = "verification"
+    description = "Запускает тесты с тегом Theme9"
+
+    useJUnitPlatform {
+        includeTags("Theme9")
+    }
+
+    finalizedBy("printTestRunOver")
+}
+
 tasks.register("printTestRunOver") {
         group = "verification"
         doLast {
