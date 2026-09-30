@@ -40,6 +40,10 @@ public class AdminLoginPage {
         return clickLoginButton();
     }
 
+    public String getErrorMessageText() {
+        return errorAlert.shouldBe(Condition.visible).getText();
+    }
+
     public SelenideElement usernameInput() {
         return usernameInput;
     }

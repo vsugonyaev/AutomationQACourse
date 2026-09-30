@@ -20,6 +20,16 @@ public class MainPageAssert {
         return this;
     }
 
+    public MainPageAssert cartButtonIsVisible() {
+        mainPage.cartButton().shouldBe(visible);
+        return this;
+    }
+
+    public MainPageAssert makeOrderButtonIsVisible() {
+        mainPage.makeOrderButton().shouldBe(visible);
+        return this;
+    }
+
     public MainPageAssert productCardHasPrice(String productName, String expectedPrice) {
         mainPage.productCard(productName).shouldHave(attribute("data-price", expectedPrice));
         return this;

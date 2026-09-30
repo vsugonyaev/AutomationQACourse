@@ -22,11 +22,25 @@ public class AdminPage {
         return this;
     }
 
-    public AdminPage addProduct(String name, double price) {
+    public AdminPage enterNewProductName(String name) {
         newNameInput.shouldBe(Condition.visible).sendKeys(name);
+        return this;
+    }
+
+    public AdminPage enterNewProductPrice(double price) {
         newPriceInput.sendKeys(String.valueOf(price));
+        return this;
+    }
+
+    public AdminPage clickAddButton() {
         addButton.shouldBe(Condition.clickable).click();
         return this;
+    }
+
+    public AdminPage addProduct(String name, double price) {
+        enterNewProductName(name);
+        enterNewProductPrice(price);
+        return clickAddButton();
     }
 
     public AdminPage setProductName(String currentRowName, String newName) {

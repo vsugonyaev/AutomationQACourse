@@ -34,6 +34,11 @@ public class AdminPageAssert {
         return this;
     }
 
+    public AdminPageAssert newPriceFieldHasValue(String expected) {
+        adminPage.newPriceInput().shouldHave(value(expected));
+        return this;
+    }
+
     public AdminPageAssert lastToastHasText(String expectedText) {
         adminPage.lastToast().shouldBe(visible).shouldHave(text(expectedText));
         return this;

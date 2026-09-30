@@ -52,6 +52,14 @@ public class MainPage {
         return this;
     }
 
+    public String getCartCountText() {
+        return cartCount.shouldBe(Condition.visible).getText();
+    }
+
+    public String getTotalPriceText() {
+        return totalPrice.shouldBe(Condition.visible).getText();
+    }
+
     public SelenideElement cartButton() {
         return cartButton;
     }
